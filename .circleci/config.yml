@@ -5,6 +5,8 @@ jobs:
   use-gcp:
     machine:
       image: ubuntu-2204:current
+    docker:
+    - image: node:22-slim
     steps:
       - gcp-cli/setup:
           version: 478.0.0
