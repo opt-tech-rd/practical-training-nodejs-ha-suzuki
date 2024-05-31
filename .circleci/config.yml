@@ -21,11 +21,13 @@ jobs:
           name: Docker Build
           working_directory: ~/project/backend/
           command: docker build -t node:22-slim .
-          # command: ls -a ~/project
       - gcloud-authentication
       - run:
-          name: docker images
+          name: Docker Images
           command: docker images
+      - run:
+          name: Docker Push
+          command: gcloud auth configure-docker asia-northeast1-b-docker.pkg.dev
 
 
 workflows:
