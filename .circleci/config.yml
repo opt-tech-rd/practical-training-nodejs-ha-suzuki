@@ -2,9 +2,6 @@ version: '2.1'
 orbs:
   gcp-cli: circleci/gcp-cli@3.2.1
 jobs:
-  build:
-    machine:
-      image: ubuntu-2004:202104-01
   use-gcp:
     executor: gcp-cli/default
     steps:
@@ -13,11 +10,11 @@ jobs:
           gcloud_service_key: GCLOUD_SERVICE_KEY
           google_project_id: GOOGLE_PROJECT_ID
       - run:
-        name: Confirmation of Gcloud
-        command: gcloud auth list
+          name: Confirmation of Gcloud
+          command: gcloud auth list
       - run:
-        name: Docker Build
-        command: docker build -t node:22-slim .
+          name: Docker Build
+          command: docker build -t node:22-slim .
 workflows:
   install_and_configure_cli:
     jobs:
