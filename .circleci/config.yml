@@ -18,8 +18,9 @@ jobs:
     steps:
       - run:
           name: Docker Build
-          working_directory: ~/home/github/opt-tech-tr/practical-training-nodejs-t-hrysdev/backend/
-          command: docker build -t node:22-slim .
+          # working_directory: ~/home/github/opt-tech-tr/practical-training-nodejs-t-hrysdev/backend/
+          # command: docker build -t node:22-slim .
+          command: ls ~/home/
       - gcloud-authentication
       - run:
           name: docker images
