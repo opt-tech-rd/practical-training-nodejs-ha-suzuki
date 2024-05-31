@@ -2,11 +2,11 @@ version: '2.1'
 orbs:
   gcp-cli: circleci/gcp-cli@3.2.1
 jobs:
-  use-gcp:
+  build:
     machine:
-      image: ubuntu-2204:current
-    docker:
-    - image: node:22-slim
+      image: ubuntu-2004:202104-01
+  use-gcp:
+    executor: gcp-cli/default
     steps:
       - gcp-cli/setup:
           version: 478.0.0
