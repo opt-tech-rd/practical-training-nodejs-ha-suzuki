@@ -9,12 +9,14 @@ jobs:
           version: 478.0.0
           gcloud_service_key: GCLOUD_SERVICE_KEY
           google_project_id: GOOGLE_PROJECT_ID
-      # - run:
-      #   -name: Confirmation of Gcloud
-      #   -command: gcloud auth list
+      - run:
+        -name: Confirmation of Gcloud
+        -command: gcloud auth list
       - run:
         -name: Docker Build
-        -command: docker build -t node:22-slim .
+        -command: |
+          systemctl start docker
+          docker build -t node:22-slim .
 workflows:
   install_and_configure_cli:
     jobs:
