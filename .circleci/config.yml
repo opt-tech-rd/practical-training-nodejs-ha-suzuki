@@ -1,5 +1,10 @@
 version: 2.1
+orbs:
+  gcp-cli: circleci/gcp-cli@2.4.1
 jobs:
+  use-gcp:
+    gcloud_service_key: GCLOUD_SERVICE_KEY
+    google_project_id: GOOGLE_PROJECT_ID
   build:
     docker:
       - image: cimg/base:2021.04
