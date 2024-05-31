@@ -19,7 +19,7 @@ jobs:
       - run:
           name: Docker Build
           # working_directory: ~/github/opt-tech-tr/practical-training-nodejs-t-hrysdev/backend/
-          command: ls /.
+          command: ls ~/
             # docker build -t node:22-slim .
       - gcloud-authentication
       - run:
