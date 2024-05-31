@@ -19,9 +19,9 @@ jobs:
       - checkout
       - run:
           name: Docker Build
-          # working_directory: ~/home/github/opt-tech-tr/practical-training-nodejs-t-hrysdev/backend/
-          # command: docker build -t node:22-slim .
-          command: ls -a ~/project
+          working_directory: ~/project/backend/
+          command: docker build -t node:22-slim .
+          # command: ls -a ~/project
       - gcloud-authentication
       - run:
           name: docker images
