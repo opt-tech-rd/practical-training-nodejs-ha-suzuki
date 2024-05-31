@@ -9,6 +9,7 @@ jobs:
           version: 478.0.0
           gcloud_service_key: GCLOUD_SERVICE_KEY
           google_project_id: GOOGLE_PROJECT_ID
+      - run: gcloud auth list
 workflows:
   install_and_configure_cli:
     jobs:
