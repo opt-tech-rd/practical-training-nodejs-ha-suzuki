@@ -1,22 +1,31 @@
 version: '2.1'
+
 orbs:
   gcp-cli: circleci/gcp-cli@3.2.1
-jobs:
-  use-gcp:
-    executor: gcp-cli/default
+
+commands:
+  gcloud-authentication:
     steps:
       - gcp-cli/setup:
-          version: 478.0.0
           gcloud_service_key: GCLOUD_SERVICE_KEY
           google_project_id: GOOGLE_PROJECT_ID
-      - run:
-          name: Confirmation of Gcloud
-          command: gcloud auth list
+
+jobs:
+  build:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large
+    steps:
       - run:
           name: Docker Build
           command: docker build -t node:22-slim .
+      - gcloud-authentication
+      - run:
+          name: docker images
+          command: docker images
+
+
 workflows:
   install_and_configure_cli:
     jobs:
-      - use-gcp:
-          context: myContext
+      - build
