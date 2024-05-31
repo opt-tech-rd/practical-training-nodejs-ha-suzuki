@@ -3,7 +3,8 @@ orbs:
   gcp-cli: circleci/gcp-cli@3.2.1
 jobs:
   use-gcp:
-    executor: gcp-cli/default
+    machine:
+      image: ubuntu-2204:current
     steps:
       - gcp-cli/setup:
           version: 478.0.0
@@ -14,9 +15,7 @@ jobs:
         -command: gcloud auth list
       - run:
         -name: Docker Build
-        -command: |
-          systemctl start docker
-          docker build -t node:22-slim .
+        -command: docker build -t node:22-slim .
 workflows:
   install_and_configure_cli:
     jobs:
