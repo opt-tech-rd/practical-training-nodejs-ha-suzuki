@@ -1,13 +1,15 @@
-FROM node:22-slim
+FROM node:latest
 
 WORKDIR /app
-
-COPY ./ /app
 
 COPY ./package*.json .
 
 RUN npm install
 
+COPY . .
+
+RUN npm run build
+
 EXPOSE 8080
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "preview", "--", "--port", "8080", "--host"]

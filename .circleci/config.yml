@@ -40,7 +40,7 @@ jobs:
   #           docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/backend-ha-suzuki
   #     - run:
   #         name: Deploy
-  #         command: gcloud run deploy service-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
+  #         command: gcloud run deploy service-backend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
     
   build-frontend:
     machine:
@@ -66,7 +66,7 @@ jobs:
             docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/frontend-ha-suzuki
       - run:
           name: Deploy
-          command: gcloud run deploy service-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
+          command: gcloud run deploy service-frontend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
 
 
 
