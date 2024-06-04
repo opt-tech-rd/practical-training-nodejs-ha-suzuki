@@ -1,10 +1,10 @@
 // src/index.tsx
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import Top from "./pages/Top";
 import Login from "./pages/Login";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
