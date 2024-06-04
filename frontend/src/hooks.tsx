@@ -6,7 +6,7 @@ import {
   signOut,
   sendEmailVerification,
 } from "firebase/auth";
-import { auth, getCurrentUser } from "./firebase";
+import { auth } from "./firebase";
 
 type EmailType = string | undefined;
 type PasswordType = string | undefined;
