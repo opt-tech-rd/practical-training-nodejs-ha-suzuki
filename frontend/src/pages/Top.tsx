@@ -5,14 +5,17 @@ export default function Top() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+  console.log(user?.getIdToken());
+
   return (
     <div>
       <h1>トップページ</h1>
-      <div>ログイン中: {user.email}</div>
-      <div>user: {JSON.stringify(user)}</div>
+      <div>ログイン中: {user?.email}</div>
       <button
         onClick={() => {
-          logout().then(() => navigate("/login"));
+          logout().then(() => {
+            navigate("/login");
+          });
         }}
       >
         ログアウト
