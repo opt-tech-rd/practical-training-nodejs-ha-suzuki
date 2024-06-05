@@ -48,8 +48,6 @@ const { url } = await startStandaloneServer(server, {
           })
       : null;
 
-    console.log(`user: ${user}`);
-
     if (!user) {
       throw new GraphQLError("User is not authenticated", {
         extensions: {
