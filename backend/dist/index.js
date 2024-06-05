@@ -39,7 +39,6 @@ const { url } = await startStandaloneServer(server, {
                 return null;
             })
             : null;
-        // const isHealthcheck = (req as express.Request).query.query === "{__typename}";
         return { user };
     },
 });
