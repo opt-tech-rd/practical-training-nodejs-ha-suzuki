@@ -1,0 +1,8 @@
+type FirebaseUser {
+  uid: String
+  email: String
+}
+
+type Query {
+  whoAmI: FirebaseUser
+}

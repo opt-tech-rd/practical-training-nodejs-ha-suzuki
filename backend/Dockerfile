@@ -1,13 +1,13 @@
-FROM node:22-slim
+FROM node:latest
 
 WORKDIR /app
 
-COPY ./src/ .
-
-COPY ./package*.json .
+COPY package*.json ./
 
 RUN npm install
 
+COPY . .
+
 EXPOSE 8080
 
-CMD ["node", "server.js"]
+CMD ["npm", "run", "start"]

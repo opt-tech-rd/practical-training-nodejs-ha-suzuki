@@ -1,11 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks";
+import { useQuery, gql } from "@apollo/client";
+
+const WHO_AM_I = gql`
+  query WhoAmI {
+    whoAmI {
+      uid
+      email
+    }
+  }
+`;
 
 export default function Top() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-
-  console.log(user?.getIdToken());
+  const { loading, error, data } = useQuery(WHO_AM_I, {
+    fetchPolicy: "no-cache",
+  });
 
   return (
     <div>
@@ -20,6 +31,13 @@ export default function Top() {
       >
         ログアウト
       </button>
+      {loading ? (
+        <div>Loading...</div>
+      ) : error ? (
+        <div>Error : {error.message}</div>
+      ) : (
+        <div>whoAmI: {JSON.stringify(data.whoAmI)}</div>
+      )}
     </div>
   );
 }
