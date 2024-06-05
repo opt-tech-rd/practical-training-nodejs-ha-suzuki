@@ -1,37 +1,46 @@
-import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
-import { loadSchemaSync } from "@graphql-tools/load";
-import { addResolversToSchema } from "@graphql-tools/schema";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-const schema = loadSchemaSync("./schema.graphql", {
-    loaders: [new GraphQLFileLoader()],
+import { readFileSync } from "node:fs";
+import { config } from "./config.js";
+import { auth } from "./firebase.js";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+const typeDefs = readFileSync("./schema.graphql", {
+    encoding: "utf-8",
 });
-const books = [
-    {
-        title: 'The Awakening',
-        author: 'Kate Chopin',
-    },
-    {
-        title: 'City of Glass',
-        author: 'Paul Auster',
-    },
-];
 // Resolvers define how to fetch the types defined in your schema.
 // This resolver retrieves books from the "books" array above.
 const resolvers = {
     Query: {
-        books: () => books,
+        whoAmI: (parent, args, contextValue, info) => contextValue.user,
     },
 };
-const schemaWithResolvers = addResolversToSchema({ schema, resolvers });
+const schema = makeExecutableSchema({ typeDefs, resolvers });
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
-const server = new ApolloServer({ schema: schemaWithResolvers });
+const server = new ApolloServer({ schema });
 // Passing an ApolloServer instance to the `startStandaloneServer` function:
 //  1. creates an Express app
 //  2. installs your ApolloServer instance as middleware
 //  3. prepares your app to handle incoming requests
 const { url } = await startStandaloneServer(server, {
-    listen: { port: 4000 },
+    listen: { port: config.server.port },
+    context: async ({ req, res }) => {
+        const token = req.headers.authorization || "";
+        const idToken = token.startsWith("Bearer ") ? token.slice(7) : "";
+        const user = idToken
+            ? await auth
+                .verifyIdToken(idToken)
+                .then((decodedToken) => {
+                const { uid, email } = decodedToken;
+                return { uid, email };
+            })
+                .catch((err) => {
+                console.error(err);
+                return null;
+            })
+            : null;
+        // const isHealthcheck = (req as express.Request).query.query === "{__typename}";
+        return { user };
+    },
 });
 console.log(`🚀  Server ready at: ${url}`);
