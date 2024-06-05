@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { GraphQLError } from "graphql";
 
 import { config } from "./config.js";
-import { auth } from "./firebase.js";
+import auth from "./firebase.js";
 
 const typeDefs = readFileSync("./schema.graphql", {
   encoding: "utf-8",
@@ -33,8 +33,6 @@ const { url } = await startStandaloneServer(server, {
     const token = req.headers.authorization || "";
     const idToken = token.startsWith("Bearer ") ? token.slice(7) : "";
 
-    console.log(idToken);
-
     const user = idToken
       ? await auth
           .verifyIdToken(idToken)
@@ -48,14 +46,14 @@ const { url } = await startStandaloneServer(server, {
           })
       : null;
 
-    if (!user) {
-      throw new GraphQLError("User is not authenticated", {
-        extensions: {
-          code: "UNAUTHENTICATED",
-          http: { status: 401 },
-        },
-      });
-    }
+    // if (!user) {
+    //   throw new GraphQLError("User is not authenticated", {
+    //     extensions: {
+    //       code: "UNAUTHENTICATED",
+    //       http: { status: 401 },
+    //     },
+    //   });
+    // }
 
     return { user };
   },

@@ -2,7 +2,7 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { readFileSync } from "node:fs";
 import { config } from "./config.js";
-import { auth } from "./firebase.js";
+import auth from "./firebase.js";
 const typeDefs = readFileSync("./schema.graphql", {
     encoding: "utf-8",
 });
@@ -25,7 +25,6 @@ const { url } = await startStandaloneServer(server, {
     context: async ({ req, res }) => {
         const token = req.headers.authorization || "";
         const idToken = token.startsWith("Bearer ") ? token.slice(7) : "";
-        console.log(idToken);
         const user = idToken
             ? await auth
                 .verifyIdToken(idToken)
