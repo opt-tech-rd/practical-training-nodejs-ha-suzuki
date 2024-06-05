@@ -1,9 +1,21 @@
-import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
+import {
+  ApolloLink,
+  ApolloClient,
+  InMemoryCache,
+  createHttpLink,
+} from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { getCurrentUser } from "./firebase";
-import { config } from "./config";
+// import { config } from "./config";
 
-const httpLink = createHttpLink({ uri: config.backend.uri });
+let httpLink: ApolloLink;
+if (process.env.MODE) {
+  httpLink = createHttpLink({
+    uri: "https://service-backend-ha-suzuki-76lhepmdeq-an.a.run.app",
+  });
+} else {
+  httpLink = createHttpLink({ uri: "http://localhost:8080/" });
+}
 
 const authLink = setContext(async (_, prevContext) => {
   const { headers } = prevContext;
