@@ -23,6 +23,7 @@ jobs:
     steps:
       - checkout
       - run:
+          
           name: Docker Build
           working_directory: ~/project/backend/
           command: docker build -t backend-ha-suzuki .
@@ -85,4 +86,7 @@ workflows:
     jobs:
       - build-backend
       - build-frontend
-      - deploy
+      - deploy:
+          requires:
+            - build-backend
+            - build-frontend
