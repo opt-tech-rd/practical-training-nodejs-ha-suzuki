@@ -6,11 +6,12 @@ import {
   createBrowserRouter,
   redirect,
 } from "react-router-dom";
+import { ApolloProvider } from "@apollo/client";
 
 import Top from "./pages/Top";
 import Login from "./pages/Login";
-
 import { getCurrentUser } from "./firebase";
+import { apolloClient } from "./apollo-client";
 
 const router = createBrowserRouter([
   {
@@ -42,7 +43,9 @@ if (container) {
   const root = createRoot(container);
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <ApolloProvider client={apolloClient}>
+        <RouterProvider router={router} />
+      </ApolloProvider>
     </StrictMode>
   );
 } else {
