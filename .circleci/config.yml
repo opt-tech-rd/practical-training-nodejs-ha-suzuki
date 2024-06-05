@@ -73,5 +73,5 @@ jobs:
 workflows:
   install_and_configure_cli:
     jobs:
-      # - build-backend
+      - build-backend
       - build-frontend
