@@ -3,7 +3,7 @@ dotenv.config();
 
 export const config = {
   firebase: {
-    serviceAccount: JSON.parse(process.env.SERVICE_ACCOUNT),
+    serviceAccount: JSON.parse(process.env.SERVICE_ACCOUNT_KEY),
   },
   server: {
     port: 4000,
