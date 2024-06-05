@@ -1,11 +1,10 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { readFileSync } from "node:fs";
+import { GraphQLError } from "graphql";
 
 import { config } from "./config.js";
 import { auth } from "./firebase.js";
-
-import { makeExecutableSchema } from "@graphql-tools/schema";
 
 const typeDefs = readFileSync("./schema.graphql", {
   encoding: "utf-8",
@@ -19,11 +18,9 @@ const resolvers = {
   },
 };
 
-const schema = makeExecutableSchema({ typeDefs, resolvers });
-
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
-const server = new ApolloServer({ schema });
+const server = new ApolloServer({ typeDefs, resolvers });
 
 // Passing an ApolloServer instance to the `startStandaloneServer` function:
 //  1. creates an Express app
@@ -50,6 +47,17 @@ const { url } = await startStandaloneServer(server, {
             return null;
           })
       : null;
+
+    console.log(`user: ${user}`);
+
+    if (!user) {
+      throw new GraphQLError("User is not authenticated", {
+        extensions: {
+          code: "UNAUTHENTICATED",
+          http: { status: 401 },
+        },
+      });
+    }
 
     return { user };
   },

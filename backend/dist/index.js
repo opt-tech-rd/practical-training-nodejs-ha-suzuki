@@ -3,7 +3,6 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import { readFileSync } from "node:fs";
 import { config } from "./config.js";
 import { auth } from "./firebase.js";
-import { makeExecutableSchema } from "@graphql-tools/schema";
 const typeDefs = readFileSync("./schema.graphql", {
     encoding: "utf-8",
 });
@@ -14,10 +13,9 @@ const resolvers = {
         whoAmI: (parent, args, contextValue, info) => contextValue.user,
     },
 };
-const schema = makeExecutableSchema({ typeDefs, resolvers });
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
-const server = new ApolloServer({ schema });
+const server = new ApolloServer({ typeDefs, resolvers });
 // Passing an ApolloServer instance to the `startStandaloneServer` function:
 //  1. creates an Express app
 //  2. installs your ApolloServer instance as middleware
@@ -40,6 +38,7 @@ const { url } = await startStandaloneServer(server, {
                 return null;
             })
             : null;
+        console.log(`user: ${user}`);
         return { user };
     },
 });
