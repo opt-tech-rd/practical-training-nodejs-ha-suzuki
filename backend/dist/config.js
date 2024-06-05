@@ -5,6 +5,6 @@ export const config = {
         serviceAccount: JSON.parse(process.env.SERVICE_ACCOUNT_KEY),
     },
     server: {
-        port: 4000,
+        port: 8080,
     },
 };
