@@ -37,11 +37,7 @@ jobs:
           name: Docker Push
           command: |
             docker tag backend-ha-suzuki asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki
-            docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/backend-ha-suzuki
-      - run:
-          name: Deploy
-          command: gcloud run deploy service-backend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
-    
+            docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/backend-ha-suzuki    
   build-frontend:
     machine:
       image: ubuntu-2204:current
@@ -68,6 +64,22 @@ jobs:
           name: Deploy
           command: gcloud run deploy service-frontend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
 
+  deploy:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large
+    steps:
+      - checkout
+      - gcloud-authentication
+      - run:
+          name: Docker Configure
+          command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+      - run:
+          name: Deploy Backend
+          command: gcloud run deploy service-backend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
+      - run:
+          name: Deploy Frontend
+          command: gcloud run deploy service-frontend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
 
 
 workflows:
@@ -75,3 +87,4 @@ workflows:
     jobs:
       - build-backend
       - build-frontend
+      - deploy
