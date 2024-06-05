@@ -8,6 +8,6 @@ export const config = {
     appId: "1:1009695668156:web:d7408af8be3392f4f3ddb9",
   },
   backend: {
-    uri: "http://localhost:4000/"
+    uri: "http://localhost:8080/"
   }
 };
