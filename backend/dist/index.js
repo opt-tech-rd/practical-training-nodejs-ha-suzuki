@@ -27,6 +27,7 @@ const { url } = await startStandaloneServer(server, {
     context: async ({ req, res }) => {
         const token = req.headers.authorization || "";
         const idToken = token.startsWith("Bearer ") ? token.slice(7) : "";
+        console.log(idToken);
         const user = idToken
             ? await auth
                 .verifyIdToken(idToken)
