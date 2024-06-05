@@ -12,8 +12,6 @@ import Login from "./pages/Login";
 import { getCurrentUser } from "./firebase";
 import { apolloClient } from "./apollo-client";
 
-
-
 const router = createBrowserRouter([
   {
     path: "/",

@@ -8,8 +8,10 @@ import { setContext } from "@apollo/client/link/context";
 import { getCurrentUser } from "./firebase";
 import { config } from "./config";
 
+console.log(import.meta.env.PROD);
+
 let httpLink: ApolloLink;
-if (import.meta.env.PROD === "production") {
+if (import.meta.env.PROD) {
   httpLink = createHttpLink({
     uri: config.deploy_backend.uri,
   });
