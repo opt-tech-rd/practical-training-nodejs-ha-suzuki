@@ -6,15 +6,15 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { getCurrentUser } from "./firebase";
-// import { config } from "./config";
+import { config } from "./config";
 
 let httpLink: ApolloLink;
-if (process.env.MODE === "production") {
+if (import.meta.env.PROD === "production") {
   httpLink = createHttpLink({
-    uri: "https://service-backend-ha-suzuki-76lhepmdeq-an.a.run.app",
+    uri: config.deploy_backend.uri,
   });
 } else {
-  httpLink = createHttpLink({ uri: "http://localhost:8080/" });
+  httpLink = createHttpLink({ uri: config.local_backend.uri });
 }
 
 const authLink = setContext(async (_, prevContext) => {
