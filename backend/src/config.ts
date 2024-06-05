@@ -3,7 +3,7 @@ dotenv.config();
 
 export const config = {
   firebase: {
-    serviceAccount: JSON.parse(process.env.GCLOUD_SERVICE_KEY),
+    serviceAccount: process.env.GCLOUD_SERVICE_KEY,
   },
   server: {
     port: 8080,
