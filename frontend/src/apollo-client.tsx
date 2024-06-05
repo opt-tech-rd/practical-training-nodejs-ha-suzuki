@@ -9,7 +9,7 @@ import { getCurrentUser } from "./firebase";
 // import { config } from "./config";
 
 let httpLink: ApolloLink;
-if (process.env.MODE) {
+if (process.env.MODE === "production") {
   httpLink = createHttpLink({
     uri: "https://service-backend-ha-suzuki-76lhepmdeq-an.a.run.app",
   });
