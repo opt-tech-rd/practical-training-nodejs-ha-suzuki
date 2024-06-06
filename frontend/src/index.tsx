@@ -9,8 +9,10 @@ import { ApolloProvider } from "@apollo/client";
 
 import Top from "./pages/Top";
 import Login from "./pages/Login";
+import Users from "./pages/Users";
 import { getCurrentUser } from "./firebase";
 import { apolloClient } from "./apollo-client";
+import { AbilityContext, ability, updateAbility } from "./casl";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +23,7 @@ const router = createBrowserRouter([
       if (!user || !user.emailVerified) {
         return redirect("/login");
       }
+      await updateAbility();
       return null;
     },
   },
@@ -30,6 +33,23 @@ const router = createBrowserRouter([
     loader: async () => {
       const user: any = await getCurrentUser();
       if (user && user.emailVerified) {
+        return redirect("/");
+      }
+      await updateAbility({ skipQuery: true });
+      return null;
+    },
+  },
+  {
+    path: "/users",
+    element: <Users />,
+    loader: async () => {
+      const user: any = await getCurrentUser();
+      if (!user || !user.emailVerified) {
+        return redirect("/login");
+      }
+      if (!ability.can("read", "User")) {
+        console.log("権限エラー");
+        alert("権限エラー");
         return redirect("/");
       }
       return null;
@@ -42,9 +62,11 @@ if (container) {
   const root = createRoot(container);
   root.render(
     <StrictMode>
-      <ApolloProvider client={apolloClient}>
-        <RouterProvider router={router} />
-      </ApolloProvider>
+      <AbilityContext.Provider value={ability}>
+        <ApolloProvider client={apolloClient}>
+          <RouterProvider router={router} />
+        </ApolloProvider>
+      </AbilityContext.Provider>
     </StrictMode>
   );
 } else {

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks";
 import { useQuery, gql } from "@apollo/client";
+import { Can } from "../casl";
 
 const WHO_AM_I = gql`
   query WhoAmI {
@@ -31,6 +32,9 @@ export default function Top() {
       >
         ログアウト
       </button>
+      <Can do="read" on="User">
+        <button onClick={() => navigate("/users")}>ユーザー管理</button>
+      </Can>
       {loading ? (
         <div>Loading...</div>
       ) : error ? (

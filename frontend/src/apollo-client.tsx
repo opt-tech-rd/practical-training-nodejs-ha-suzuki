@@ -1,28 +1,18 @@
-import {
-  ApolloLink,
-  ApolloClient,
-  InMemoryCache,
-  createHttpLink,
-} from "@apollo/client";
+import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { getCurrentUser } from "./firebase";
 import { config } from "./config";
 
-console.log(import.meta.env.PROD);
-
-let httpLink: ApolloLink;
-if (import.meta.env.PROD) {
-  httpLink = createHttpLink({
-    uri: config.deploy_backend.uri,
-  });
-} else {
-  httpLink = createHttpLink({ uri: config.local_backend.uri });
-}
+const uri = import.meta.env.PROD
+  ? config.deploy_backend.uri
+  : config.local_backend.uri;
+const httpLink = createHttpLink({ uri: uri });
 
 const authLink = setContext(async (_, prevContext) => {
   const { headers } = prevContext;
   const user: any = await getCurrentUser();
   const idToken = user && user.emailVerified ? await user.getIdToken() : null;
+
   return idToken
     ? {
         headers: {
