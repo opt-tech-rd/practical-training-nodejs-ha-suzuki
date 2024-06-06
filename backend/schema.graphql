@@ -1,8 +1,18 @@
+scalar JSON
+
 type FirebaseUser {
   uid: String
   email: String
 }
 
+type RawRules {
+  action: [String!]!
+  subject: [String!]!
+  fields: [String!]
+  conditions: JSON
+}
+
 type Query {
   whoAmI: FirebaseUser
+  rawRules: [RawRules]
 }
