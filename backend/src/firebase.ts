@@ -1,11 +1,12 @@
-import * as dotenv from 'dotenv'
 import admin from "firebase-admin";
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
-
-dotenv.config()
+import { config } from "./config";
 
 const app = initializeApp({
-  credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_CONFIG))
+  credential: admin.credential.cert(
+    JSON.parse(config.firebase.service_account)
+  ),
+  projectId: config.firebase.project_id,
 });
 export const auth = getAuth(app);
