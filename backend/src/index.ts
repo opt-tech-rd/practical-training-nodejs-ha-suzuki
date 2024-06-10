@@ -57,6 +57,14 @@ const resolvers = {
       return users;
     },
   },
+  Mutation: {
+    updateUserRole: async (parent, args, contextValue) => {
+      await guardByRoles(["admin"], contextValue);
+      const { uid, role } = args;
+      const user = await updateUserRole(uid, role);
+      return user;
+    },
+  },
   JSON: GraphQLJSON,
 };
 

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks";
-import { useQuery, gql } from "@apollo/client";
-import { Can } from "../casl";
+import { useQuery, gql, useMutation } from "@apollo/client";
+import { Can, updateAbility } from "../casl";
 
 const USERS = gql`
   query Users {
@@ -14,11 +14,25 @@ const USERS = gql`
   }
 `;
 
+const UPDATE_USER_ROLE = gql`
+  mutation UpdateUserRole($uid: String!, $role: Role!) {
+    updateUserRole(uid: $uid, role: $role) {
+      uid
+      email
+      role
+      createdAt
+    }
+  }
+`;
+
 export default function Users() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { loading, error, data } = useQuery(USERS, {
+  const { loading, error, data, refetch } = useQuery(USERS, {
     fetchPolicy: "no-cache",
+  });
+  const [updateUserRole] = useMutation(UPDATE_USER_ROLE, {
+    onCompleted: () => refetch(),
   });
 
   return (
@@ -26,9 +40,8 @@ export default function Users() {
       <h1>ユーザー管理ページ</h1>
       <div>
         ログイン中のユーザ:{" "}
-        {JSON.stringify({ uid: user.uid, email: user.email })}
+        {JSON.stringify({ email: user.email })}
       </div>
-      <h2>Users</h2>
       <div>
         <ul>
           {loading ? (
@@ -39,7 +52,7 @@ export default function Users() {
             data?.users.map((user, i) => {
               return (
                 <li key={i}>
-                  <div>user: {JSON.stringify(user)}</div>
+                  <div>{JSON.stringify(user)}</div>
                   <Can do="update" on="User">
                     <div>
                       <label htmlFor="role">role: </label>
@@ -48,9 +61,14 @@ export default function Users() {
                         defaultValue={user.role}
                         onChange={(event) => {
                           const newRole = event.target.value;
-
+                          updateUserRole({
+                            variables: { uid: user.uid, role: newRole },
+                          }).then(() => updateAbility());
                         }}
-                      ></select>
+                      >
+                        <option value={"admin"}>admin</option>
+                        <option value={"member"}>member</option>
+                      </select>
                     </div>
                   </Can>
                 </li>

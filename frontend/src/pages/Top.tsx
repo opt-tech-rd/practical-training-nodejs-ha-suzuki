@@ -24,7 +24,7 @@ export default function Top() {
       <h1>トップページ</h1>
       <div>
         ログイン中のユーザ:{" "}
-        {JSON.stringify({ uid: user.uid, email: user.email })}
+        {JSON.stringify({ email: user.email })}
       </div>
       <button
         onClick={() => {
