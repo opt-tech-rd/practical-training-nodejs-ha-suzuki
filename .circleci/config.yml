@@ -40,8 +40,7 @@ jobs:
           command: |
             curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.11.0/cloud-sql-proxy.linux.amd64
             chmod +x cloud-sql-proxy
-            ls /home/circleci
-            # ./cloud-sql-proxy $DB_PORT --credentials-file  --port << pipeline.parameters.db-instance-connection-name >>
+            ./cloud-sql-proxy $DB_PORT --credentials-file /home/circleci/gcloud-service-key.json --port << pipeline.parameters.db-instance-connection-name >>
           # background: true
 
   # build-backend:
