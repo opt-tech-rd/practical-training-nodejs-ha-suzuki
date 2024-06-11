@@ -52,7 +52,7 @@ jobs:
       - run:
           name: Docker build
           working_directory: ~/project/frontend/
-          command: docker build -t frontend-ha-suzuki --build-arg VITE_BACKEND_URI=<< pipeline.parameters.backend-uri >>" .
+          command: docker build -t frontend-ha-suzuki --build-arg VITE_BACKEND_URI=<< pipeline.parameters.backend-uri >> .
       - gcloud-authentication
       - run:
           name: Docker configure
