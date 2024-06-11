@@ -110,22 +110,22 @@ jobs:
             export DB_PASSWORD=$(gcloud secrets versions access latest --secret SUZUKI_DB_PASSWORD --project $GOOGLE_PROJECT_ID)
             npm run migrate
 
-  # deploy:
-  #   machine:
-  #     image: ubuntu-2204:current
-  #   resource_class: large
-  #   steps:
-  #     - checkout
-  #     - gcloud-authentication
-  #     - run:
-  #         name: Docker Configure
-  #         command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
-  #     - run:
-  #         name: Deploy Backend
-  #         command: gcloud run deploy service-backend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
-  #     - run:
-  #         name: Deploy Frontend
-  #         command: gcloud run deploy service-frontend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
+  deploy:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large
+    steps:
+      - checkout
+      - gcloud-authentication
+      - run:
+          name: Docker Configure
+          command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+      - run:
+          name: Deploy Backend
+          command: gcloud run deploy service-backend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
+      - run:
+          name: Deploy Frontend
+          command: gcloud run deploy service-frontend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
 
 workflows:
   install_and_configure_cli:
@@ -137,6 +137,6 @@ workflows:
           requires:
             - build-and-push-backend
             - build-and-push-frontend
-      # - deploy:
-      #     requires:
-      #       - migrate-database
+      - deploy:
+          requires:
+            - migrate-database
