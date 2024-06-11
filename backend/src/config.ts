@@ -14,15 +14,22 @@ export const config = {
   server: {
     port: process.env.PORT || "8080",
   },
-  db: isCloudRun
-  ? {
+  // db: isCloudRun
+  // ? {
+  //   socketPath: "/cloudsql/" + process.env.DB_INSTANCE_CONNECTION_NAME,
+  //   user: process.env.DB_USER,
+  //   password: process.env.DB_PASSWORD,
+  //   database: process.env.DB_NAME,
+  // }
+  // : {
+  //   host: process.env.DB_HOST,
+  //   user: process.env.DB_USER,
+  //   password: process.env.DB_PASSWORD,
+  //   database: process.env.DB_NAME,
+  // }
+    db:
+  {
     socketPath: "/cloudsql/" + process.env.DB_INSTANCE_CONNECTION_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  }
-  : {
-    host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
