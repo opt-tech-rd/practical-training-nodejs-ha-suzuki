@@ -116,16 +116,16 @@ jobs:
       - run:
           name: Docker Configure
           command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
-      # - run:
-      #     name: Deploy Backend
-      #     command: |
-      #       gcloud run deploy service-backend-ha-suzuki \
-      #       --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest \
-      #       --region asia-northeast1 \
-      #       --allow-unauthenticated \
-      #       --add-cloudsql-instances=<< pipeline.parameters.db-instance-connection-name >> \
-      #       --set-env-vars DB_INSTANCE_CONNECTION_NAME=<< pipeline.parameters.db-instance-connection-name >> \
-      #       --update-secrets=DB_PASSWORD=DB_PASSWORD:latest,DB_USER=DB_USER:latest \
+      - run:
+          name: Deploy Backend
+          command: |
+            gcloud run deploy service-backend-ha-suzuki \
+            --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest \
+            --region asia-northeast1 \
+            --allow-unauthenticated \
+            --add-cloudsql-instances=<< pipeline.parameters.db-instance-connection-name >> \
+            --set-env-vars DB_INSTANCE_CONNECTION_NAME=<< pipeline.parameters.db-instance-connection-name >> \
+            --update-secrets=DB_PASSWORD=DB_PASSWORD:latest,DB_USER=DB_USER:latest \
       - run:
           name: Deploy Frontend
           command: |
