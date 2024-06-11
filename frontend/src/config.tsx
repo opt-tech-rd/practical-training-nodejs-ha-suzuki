@@ -1,5 +1,3 @@
-console.log(import.meta.env.VITE_BACKEND_URI);
-
 export const config = {
   firebase: {
     apiKey: "AIzaSyAnKuIgcSOqSh2pf8jo5JtRph-V1a0lmyc",
