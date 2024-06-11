@@ -6,12 +6,7 @@ import { config } from "../config";
 export const db = new Kysely<DB>({
   plugins: [new CamelCasePlugin()],
   dialect: new MysqlDialect({
-    pool: createPool({
-      host: config.db.host,
-      user: config.db.user,
-      password: config.db.password,
-      database: config.db.database,
-    }),
+    pool: createPool(config.db),
   }),
 });
 
