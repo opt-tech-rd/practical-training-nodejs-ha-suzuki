@@ -30,6 +30,7 @@ export const config = {
     db:
   {
     socketPath: "/cloudsql/" + process.env.DB_INSTANCE_CONNECTION_NAME,
+    host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
