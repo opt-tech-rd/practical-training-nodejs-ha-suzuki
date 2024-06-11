@@ -27,16 +27,12 @@ jobs:
     machine:
       image: ubuntu-2204:current
     resource_class: large
-    parameters:
-      additional-build-option:
-        type: string
-        default: ""
     steps:
       - checkout
       - run:
           name: Docker build
           working_directory: ~/project/backend/
-          command: docker build -t backend-ha-suzuki .
+          command: docker build -t backend-ha-suzuki --build-arg VITE_BACKEND_URI=<< pipeline.parameters.backend-uri >>" . 
       - gcloud-authentication
       - run:
           name: Docker configure
@@ -141,8 +137,7 @@ jobs:
 workflows:
   install_and_configure_cli:
     jobs:
-      - build-and-push-backend:
-          additional-build-option: "--build-arg VITE_BACKEND_URI=<< pipeline.parameters.backend-uri >>"
+      - build-and-push-backend
       - build-and-push-frontend
       - migrate-database:
           requires:
