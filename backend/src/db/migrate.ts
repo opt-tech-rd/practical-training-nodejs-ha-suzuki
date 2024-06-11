@@ -2,12 +2,13 @@ import * as path from "path";
 import { promises as fs } from "fs";
 import { Migrator, FileMigrationProvider } from "kysely";
 import { db } from "./database";
+import { config } from "../config";
 
 async function migrateToLatest() {
   const __dirname = new URL(import.meta.url).pathname;
   console.log(__dirname);
 
-  console.log(db)
+  console.log(config);
 
   const migrator = new Migrator({
     db,

@@ -145,7 +145,6 @@ workflows:
       - migrate-database:
           requires:
             - build-and-push-backend
-            - build-and-push-frontend
       # - deploy:
       #     requires:
       #       - migrate-database
