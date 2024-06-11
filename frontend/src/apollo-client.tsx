@@ -3,7 +3,10 @@ import { setContext } from "@apollo/client/link/context";
 import { getCurrentUser } from "./firebase";
 import { config } from "./config";
 
-const httpLink = createHttpLink({ uri: config.backend.uri });
+const uri = import.meta.env.PROD
+  ? config.deploy_backend.uri
+  : config.local_backend.uri;
+const httpLink = createHttpLink({ uri: uri });
 
 const authLink = setContext(async (_, prevContext) => {
   const { headers } = prevContext;
