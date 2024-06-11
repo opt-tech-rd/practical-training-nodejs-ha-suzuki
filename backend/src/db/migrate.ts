@@ -7,6 +7,8 @@ async function migrateToLatest() {
   const __dirname = new URL(import.meta.url).pathname;
   console.log(__dirname);
 
+  console.log(db)
+
   const migrator = new Migrator({
     db,
     provider: new FileMigrationProvider({
