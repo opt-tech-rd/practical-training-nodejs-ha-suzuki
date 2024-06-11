@@ -52,7 +52,7 @@ export async function getUsers(role) {
   return db
     .selectFrom("user")
     .selectAll()
-    .$if(role === "member", (q) => q.where("role", "=", "member"))
+    // .$if(role === "member", (q) => q.where("role", "=", "member"))
     .orderBy("createdAt", "desc")
     .execute();
 }
