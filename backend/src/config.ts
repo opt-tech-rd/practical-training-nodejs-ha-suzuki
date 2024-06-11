@@ -1,5 +1,5 @@
-import * as dotenv from "dotenv";
-dotenv.config();
+// import * as dotenv from "dotenv";
+// dotenv.config();
 
 export const isCloudRun =
   process.env.K_SERVICE &&
