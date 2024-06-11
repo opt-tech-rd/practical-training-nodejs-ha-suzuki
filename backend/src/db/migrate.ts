@@ -16,6 +16,8 @@ async function migrateToLatest() {
     }),
   });
 
+  console.log(migrator);
+
   const { error, results } = await migrator.migrateToLatest();
 
   results?.forEach((it) => {
