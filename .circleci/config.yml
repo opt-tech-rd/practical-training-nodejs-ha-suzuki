@@ -5,9 +5,12 @@ orbs:
   node: circleci/node@5.2.0
 
 parameters:
-  image-name:
+  image-name-prefix:
     type: string
     default: asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/backend-ha-suzuki
+  db-instance-connection-name:
+    type: string
+    default: tech-induction-training-2024:asia-northeast1:ha-suzuki
 
 commands:
   gcloud-authentication:
@@ -37,8 +40,8 @@ jobs:
           command: |
             curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.11.0/cloud-sql-proxy.linux.amd64
             chmod +x cloud-sql-proxy
-            ./cloud-sql-proxy tech-induction-training-2024:asia-northeast1:ha-suzuki
-          background: true
+            ./cloud-sql-proxy << pipeline.parameters.db-instance-connection-name >>
+          # background: true
 
   # build-backend:
   #   machine:
