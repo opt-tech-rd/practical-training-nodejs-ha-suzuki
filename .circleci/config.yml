@@ -103,7 +103,7 @@ jobs:
           name: Run dockerize
           command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 1m
       - run:
-          naem: Run maigrate
+          name: Run maigrate
           working_directory: ~/project/backend
           command: |
             export DB_USER=$(gcloud secrets versions access latest --secret SUZUKI_DB_USER --project $GOOGLE_PROJECT_ID)
