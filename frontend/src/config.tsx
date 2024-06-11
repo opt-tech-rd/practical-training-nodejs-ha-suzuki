@@ -1,3 +1,5 @@
+console.log(import.meta.env.VITE_BACKEND_URI);
+
 export const config = {
   firebase: {
     apiKey: "AIzaSyAnKuIgcSOqSh2pf8jo5JtRph-V1a0lmyc",
@@ -8,6 +10,6 @@ export const config = {
     appId: "1:1009695668156:web:d7408af8be3392f4f3ddb9",
   },
   backend: {
-    uri: import.meta.env.VITE_BACKEND_URI || "http://localhost:8080/"
+    uri: import.meta.env.VITE_BACKEND_URI || "http://localhost:8080/",
   },
 };
