@@ -8,7 +8,7 @@ export const config = {
     appId: "1:1009695668156:web:d7408af8be3392f4f3ddb9",
   },
   local_backend: {
-    uri: "http://localhost:8080/"
+    uri: import.meta.env.VITE_BACKEND_URI || "http://localhost:8080/"
   },
   deploy_backend: {
     uri: "https://service-backend-ha-suzuki-76lhepmdeq-an.a.run.app"
