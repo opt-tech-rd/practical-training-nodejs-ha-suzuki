@@ -71,7 +71,7 @@ const resolvers = {
 const server = new ApolloServer({ typeDefs, resolvers });
 
 const { url } = await startStandaloneServer(server, {
-  listen: { port: config.server.port },
+  listen: { port: parseInt(config.server.port) },
 
   context: async ({ req }) => {
     const token = req.headers.authorization || "";

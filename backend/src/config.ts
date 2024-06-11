@@ -1,13 +1,18 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
+export const isCloudRun =
+  process.env.K_SERVICE &&
+  process.env.K_REVISION &&
+  process.env.K_CONFIGURATION;
+
 export const config = {
   firebase: {
-    service_account: process.env.FIREBASE_CONFIG,
-    project_id: process.env.GOOGLE_CLOUD_PROJECT,
+    // service_account: process.env.FIREBASE_CONFIG,
+    project_id: "tech-induction-training-2024",
   },
   server: {
-    port: 8080,
+    port: process.env.PORT || "8080",
   },
   db: {
     host: process.env.DB_HOST,
