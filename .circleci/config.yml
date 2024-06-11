@@ -102,8 +102,8 @@ jobs:
           name: Run maigrate
           working_directory: ~/project/backend
           command: |
-            export DB_USER=$(gcloud secrets versions access latest --secret SUZUKI_DB_USER --project $GOOGLE_PROJECT_ID)
-            export DB_PASSWORD=$(gcloud secrets versions access latest --secret SUZUKI_DB_PASSWORD --project $GOOGLE_PROJECT_ID)
+            echo "export DB_USER=$(gcloud secrets versions access latest --secret SUZUKI_DB_USER --project $GOOGLE_PROJECT_ID)" >> $BASH_ENV
+            echo "export DB_PASSWORD=$(gcloud secrets versions access latest --secret SUZUKI_DB_PASSWORD --project $GOOGLE_PROJECT_ID)" >> $BASH_ENV
             npm run migrate
 
   deploy:
