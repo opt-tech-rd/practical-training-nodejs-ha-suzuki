@@ -1,4 +1,4 @@
-version: '2.1'
+version: "2.1"
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.2.1
@@ -27,22 +27,19 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Docker Build
+          name: Docker build
           working_directory: ~/project/backend/
           command: docker build -t backend-ha-suzuki .
       - gcloud-authentication
       - run:
-          name: Docker Images
-          command: docker images
-      - run:
-          name: Docker Configure
+          name: Docker configure
           command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
       - run:
-          name: Docker Push
+          name: Docker push
           command: |
             docker tag backend-ha-suzuki asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki
-            docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/backend-ha-suzuki    
-  
+            docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/backend-ha-suzuki
+
   build-frontend:
     machine:
       image: ubuntu-2204:current
@@ -50,18 +47,15 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Docker Build
+          name: Docker build
           working_directory: ~/project/frontend/
           command: docker build -t frontend-ha-suzuki .
       - gcloud-authentication
       - run:
-          name: Docker Images
-          command: docker images
-      - run:
-          name: Docker Configure
+          name: Docker configure
           command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
       - run:
-          name: Docker Push
+          name: Docker push
           command: |
             docker tag frontend-ha-suzuki asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki
             docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/frontend-ha-suzuki
@@ -88,6 +82,22 @@ jobs:
             chmod +x cloud-sql-proxy
             ./cloud-sql-proxy --port $DB_PORT --credentials-file /home/circleci/gcloud-service-key.json << pipeline.parameters.db-instance-connection-name >>
           background: true
+      - restore_cache:
+          key: backend-ha-suzuki-deps-{{checksum "~/project/backend/package-lock.json" }}
+      - run:
+          name: Install dependencies
+          working_directory: ~/project/backend
+          command: npm ci
+      - save_cache:
+          key: backend-ha-suzuki-deps-{{checksum "~/project/backend/package-lock.json" }}
+          paths:
+            - ~/project/backend/node_modules
+      - run:
+          name: Dockerize database
+          command: Dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 1m
+      # - run:
+      #     naem: Maigration database
+      #     working_directory: ~/project/backend
 
   # deploy:
   #   machine:
@@ -106,13 +116,15 @@ jobs:
   #         name: Deploy Frontend
   #         command: gcloud run deploy service-frontend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
 
-
 workflows:
   install_and_configure_cli:
     jobs:
       - build-backend
       - build-frontend
-      - migrate-database
+      - migrate-database:
+          requires:
+            - build-backend
+            - build-frontend
       # - deploy:
       #     requires:
       #       - build-backend
