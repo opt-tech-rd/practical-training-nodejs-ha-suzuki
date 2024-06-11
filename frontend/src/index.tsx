@@ -14,8 +14,6 @@ import { getCurrentUser } from "./firebase";
 import { apolloClient } from "./apollo-client";
 import { AbilityContext, ability, updateAbility } from "./casl";
 
-console.log(import.meta.env.VITE_BACKEND_URI);
-
 const router = createBrowserRouter([
   {
     path: "/",

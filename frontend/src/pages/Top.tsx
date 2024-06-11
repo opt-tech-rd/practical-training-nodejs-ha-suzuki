@@ -19,6 +19,8 @@ export default function Top() {
     fetchPolicy: "no-cache",
   });
 
+  console.log(import.meta.env.VITE_BACKEND_URI);
+
   return (
     <div>
       <h1>トップページ</h1>
