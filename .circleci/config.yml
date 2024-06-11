@@ -124,8 +124,8 @@ jobs:
             --region asia-northeast1 \
             --allow-unauthenticated \
             --add-cloudsql-instances=<< pipeline.parameters.db-instance-connection-name >> \
-            --set-env-vars DB_INSTANCE_CONNECTION_NAME=<< pipeline.parameters.db-instance-connection-name >>,DB_PASSWORD=$DB_PASSWORD,DB_USER=$DB_USER \
-            # --update-secrets=DB_PASSWORD=DB_PASSWORD:latest,DB_USER=DB_USER:latest \
+            --set-env-vars DB_INSTANCE_CONNECTION_NAME=<< pipeline.parameters.db-instance-connection-name >> \
+            --update-secrets DB_PASSWORD=DB_PASSWORD:latest,DB_USER=DB_USER:latest \
       - run:
           name: Deploy Frontend
           command: |
