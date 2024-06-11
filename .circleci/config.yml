@@ -20,6 +20,52 @@ commands:
           google_project_id: GOOGLE_PROJECT_ID
 
 jobs:
+  build-backend:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large
+    steps:
+      - checkout
+      - run:
+          name: Docker Build
+          working_directory: ~/project/backend/
+          command: docker build -t backend-ha-suzuki .
+      - gcloud-authentication
+      - run:
+          name: Docker Images
+          command: docker images
+      - run:
+          name: Docker Configure
+          command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+      - run:
+          name: Docker Push
+          command: |
+            docker tag backend-ha-suzuki asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki
+            docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/backend-ha-suzuki    
+  
+  build-frontend:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large
+    steps:
+      - checkout
+      - run:
+          name: Docker Build
+          working_directory: ~/project/frontend/
+          command: docker build -t frontend-ha-suzuki .
+      - gcloud-authentication
+      - run:
+          name: Docker Images
+          command: docker images
+      - run:
+          name: Docker Configure
+          command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+      - run:
+          name: Docker Push
+          command: |
+            docker tag frontend-ha-suzuki asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki
+            docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/frontend-ha-suzuki
+
   migrate-database:
     executor:
       name: node/default
@@ -41,53 +87,7 @@ jobs:
             curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.11.0/cloud-sql-proxy.linux.amd64
             chmod +x cloud-sql-proxy
             ./cloud-sql-proxy --port $DB_PORT --credentials-file /home/circleci/gcloud-service-key.json << pipeline.parameters.db-instance-connection-name >>
-          # background: true
-
-  # build-backend:
-  #   machine:
-  #     image: ubuntu-2204:current
-  #   resource_class: large
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Docker Build
-  #         working_directory: ~/project/backend/
-  #         command: docker build -t backend-ha-suzuki .
-  #     - gcloud-authentication
-  #     - run:
-  #         name: Docker Images
-  #         command: docker images
-  #     - run:
-  #         name: Docker Configure
-  #         command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
-  #     - run:
-  #         name: Docker Push
-  #         command: |
-  #           docker tag backend-ha-suzuki asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki
-  #           docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/backend-ha-suzuki    
-  
-  # build-frontend:
-  #   machine:
-  #     image: ubuntu-2204:current
-  #   resource_class: large
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Docker Build
-  #         working_directory: ~/project/frontend/
-  #         command: docker build -t frontend-ha-suzuki .
-  #     - gcloud-authentication
-  #     - run:
-  #         name: Docker Images
-  #         command: docker images
-  #     - run:
-  #         name: Docker Configure
-  #         command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
-  #     - run:
-  #         name: Docker Push
-  #         command: |
-  #           docker tag frontend-ha-suzuki asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki
-  #           docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/frontend-ha-suzuki
+          background: true
 
   # deploy:
   #   machine:
@@ -110,9 +110,9 @@ jobs:
 workflows:
   install_and_configure_cli:
     jobs:
+      - build-backend
+      - build-frontend
       - migrate-database
-      # - build-backend
-      # - build-frontend
       # - deploy:
       #     requires:
       #       - build-backend

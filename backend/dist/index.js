@@ -1,12 +1,12 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { readFileSync } from "node:fs";
-// import { GraphQLError } from "graphql";
+import { GraphQLError } from "graphql";
 import { parse } from "url";
 import GraphQLJSON from "graphql-type-json";
 import { config } from "./config.js";
 import { auth } from "./firebase.js";
-import { createUser, getUser, getUsers, } from "./db/database.js";
+import { updateUserRole, createUser, getUser, getUsers, } from "./db/database.js";
 import { guardByRoles } from "./guards.js";
 async function getRawRules(role) {
     return role === "admin"
@@ -48,6 +48,14 @@ const resolvers = {
             return users;
         },
     },
+    Mutation: {
+        updateUserRole: async (parent, args, contextValue) => {
+            await guardByRoles(["admin"], contextValue);
+            const { uid, role } = args;
+            const user = await updateUserRole(uid, role);
+            return user;
+        },
+    },
     JSON: GraphQLJSON,
 };
 const server = new ApolloServer({ typeDefs, resolvers });
@@ -71,14 +79,14 @@ const { url } = await startStandaloneServer(server, {
         const parseReqUrl = parse(req.url, true);
         const isHealthCheck = parseReqUrl.query.query === "{__typename}";
         // ローカルホストでバックエンドの挙動を確認するときはコメントアウトする
-        // if (!isHealthCheck && !requestUser) {
-        //   throw new GraphQLError("requestUser is not authenticated", {
-        //     extensions: {
-        //       code: "UNAUTHENTICATED",
-        //       http: { status: 401 },
-        //     },
-        //   });
-        // }
+        if (!isHealthCheck && !requestUser) {
+            throw new GraphQLError("requestUser is not authenticated", {
+                extensions: {
+                    code: "UNAUTHENTICATED",
+                    http: { status: 401 },
+                },
+            });
+        }
         if (requestUser?.uid) {
             await getUser(requestUser.uid).then((user) => {
                 if (!user) {

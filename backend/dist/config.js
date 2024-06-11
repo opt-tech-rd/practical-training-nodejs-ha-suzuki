@@ -3,6 +3,7 @@ dotenv.config();
 export const config = {
     firebase: {
         service_account: process.env.FIREBASE_CONFIG,
+        project_id: process.env.GOOGLE_CLOUD_PROJECT,
     },
     server: {
         port: 8080,
