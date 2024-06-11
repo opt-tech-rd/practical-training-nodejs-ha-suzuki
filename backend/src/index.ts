@@ -15,6 +15,8 @@ import {
 } from "./db/database.js";
 import { guardByRoles } from "./guards.js";
 
+console.log(config)
+
 async function getRawRules(role) {
   return role === "admin"
     ? [
