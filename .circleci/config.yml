@@ -128,7 +128,7 @@ jobs:
             --allow-unauthenticated \
             --add-cloudsql-instances=<< pipeline.parameters.db-instance-connection-name >> \
             --set-env-vars DB_INSTANCE_CONNECTION_NAME=<< pipeline.parameters.db-instance-connection-name >> \
-            --update-secrets=DB_PASSWORD=SUZUKI_DB_PASSWORD:latest,DB_USER=SUZUKI_DB_USER:latest \
+            --update-secrets=DB_PASSWORD=SUZUKI_DB_PASSWORD:latest,DB_USER=SUZUKI_DB_USER:latest,DB_NAME=SUZUKI_DB_NAME:latest \
   #     - run:
   #         name: Deploy Frontend
   #         command: |
