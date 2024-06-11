@@ -129,13 +129,13 @@ jobs:
             --add-cloudsql-instances=<< pipeline.parameters.db-instance-connection-name >> \
             --set-env-vars DB_INSTANCE_CONNECTION_NAME=<< pipeline.parameters.db-instance-connection-name >> \
             --update-secrets=DB_PASSWORD=SUZUKI_DB_PASSWORD:latest,DB_USER=SUZUKI_DB_USER:latest,DB_NAME=SUZUKI_DB_NAME:latest \
-  #     - run:
-  #         name: Deploy Frontend
-  #         command: |
-  #           gcloud run deploy service-frontend-ha-suzuki \
-  #           --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest \
-  #           --region asia-northeast1 \
-  #           --allow-unauthenticated \
+      - run:
+          name: Deploy Frontend
+          command: |
+            gcloud run deploy service-frontend-ha-suzuki \
+            --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest \
+            --region asia-northeast1 \
+            --allow-unauthenticated \
 
 workflows:
   install_and_configure_cli:
