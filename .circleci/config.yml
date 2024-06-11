@@ -2,6 +2,7 @@ version: '2.1'
 
 orbs:
   gcp-cli: circleci/gcp-cli@3.2.1
+  node: circleci/node@5.2.0
 
 parameters:
   image-name:
@@ -16,77 +17,100 @@ commands:
           google_project_id: GOOGLE_PROJECT_ID
 
 jobs:
-  build-backend:
-    machine:
-      image: ubuntu-2204:current
-    resource_class: large
+  migrate-database:
+    executor:
+      name: node/default
     steps:
       - checkout
-      - run:
-          
-          name: Docker Build
-          working_directory: ~/project/backend/
-          command: docker build -t backend-ha-suzuki .
       - gcloud-authentication
       - run:
-          name: Docker Images
-          command: docker images
-      - run:
-          name: Docker Configure
-          command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
-      - run:
-          name: Docker Push
+          name: Set environment variables
           command: |
-            docker tag backend-ha-suzuki asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki
-            docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/backend-ha-suzuki    
-  
-  build-frontend:
-    machine:
-      image: ubuntu-2204:current
-    resource_class: large
-    steps:
-      - checkout
+            DB_HOST=localhost
+            DB_PORT=3306
+            DB_NAME=database_ha_suzuki
+            echo "export DB_HOST=$DB_HOST" >> $BASH_ENV
+            echo "export DB_PORT=$DB_PORT" >> $BASH_ENV
+            echo "export DB_NAME=$DB_NAME" >> $BASH_ENV
       - run:
-          name: Docker Build
-          working_directory: ~/project/frontend/
-          command: docker build -t frontend-ha-suzuki .
-      - gcloud-authentication
-      - run:
-          name: Docker Images
-          command: docker images
-      - run:
-          name: Docker Configure
-          command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
-      - run:
-          name: Docker Push
+          name: Run cloud-sql-proxy
           command: |
-            docker tag frontend-ha-suzuki asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki
-            docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/frontend-ha-suzuki
+            curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.11.0/cloud-sql-proxy.linux.amd64
+            chmod +x cloud-sql-proxy
+            ./cloud-sql-proxy tech-induction-training-2024:asia-northeast1:ha-suzuki
 
-  deploy:
-    machine:
-      image: ubuntu-2204:current
-    resource_class: large
-    steps:
-      - checkout
-      - gcloud-authentication
-      - run:
-          name: Docker Configure
-          command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
-      - run:
-          name: Deploy Backend
-          command: gcloud run deploy service-backend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
-      - run:
-          name: Deploy Frontend
-          command: gcloud run deploy service-frontend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
+
+  # build-backend:
+  #   machine:
+  #     image: ubuntu-2204:current
+  #   resource_class: large
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Docker Build
+  #         working_directory: ~/project/backend/
+  #         command: docker build -t backend-ha-suzuki .
+  #     - gcloud-authentication
+  #     - run:
+  #         name: Docker Images
+  #         command: docker images
+  #     - run:
+  #         name: Docker Configure
+  #         command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+  #     - run:
+  #         name: Docker Push
+  #         command: |
+  #           docker tag backend-ha-suzuki asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki
+  #           docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/backend-ha-suzuki    
+  
+  # build-frontend:
+  #   machine:
+  #     image: ubuntu-2204:current
+  #   resource_class: large
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Docker Build
+  #         working_directory: ~/project/frontend/
+  #         command: docker build -t frontend-ha-suzuki .
+  #     - gcloud-authentication
+  #     - run:
+  #         name: Docker Images
+  #         command: docker images
+  #     - run:
+  #         name: Docker Configure
+  #         command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+  #     - run:
+  #         name: Docker Push
+  #         command: |
+  #           docker tag frontend-ha-suzuki asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki
+  #           docker push asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/frontend-ha-suzuki
+
+  # deploy:
+  #   machine:
+  #     image: ubuntu-2204:current
+  #   resource_class: large
+  #   steps:
+  #     - checkout
+  #     - gcloud-authentication
+  #     - run:
+  #         name: Docker Configure
+  #         command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+  #     - run:
+  #         name: Deploy Backend
+  #         command: gcloud run deploy service-backend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
+  #     - run:
+  #         name: Deploy Frontend
+  #         command: gcloud run deploy service-frontend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
 
 
 workflows:
   install_and_configure_cli:
     jobs:
-      - build-backend
-      - build-frontend
-      - deploy:
-          requires:
-            - build-backend
-            - build-frontend
+      - migrate-database
+      # - build-backend
+      # - build-frontend
+      # - deploy:
+      #     requires:
+      #       - build-backend
+      #       - build-frontend
