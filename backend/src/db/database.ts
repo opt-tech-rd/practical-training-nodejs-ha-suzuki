@@ -44,10 +44,12 @@ export async function updateUserRole(uid, role) {
 }
 
 export async function getUsers(role) {
-  return db
-    .selectFrom("user")
-    .selectAll()
-    // .$if(role === "member", (q) => q.where("role", "=", "member"))
-    .orderBy("createdAt", "desc")
-    .execute();
+  return (
+    db
+      .selectFrom("user")
+      .selectAll()
+      // .$if(role === "member", (q) => q.where("role", "=", "member"))
+      .orderBy("createdAt", "desc")
+      .execute()
+  );
 }
