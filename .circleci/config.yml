@@ -94,7 +94,7 @@ jobs:
             - ~/project/backend/node_modules
       - run:
           name: Dockerize database
-          command: Dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 1m
+          command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 1m
       # - run:
       #     naem: Maigration database
       #     working_directory: ~/project/backend
