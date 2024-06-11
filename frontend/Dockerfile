@@ -1,5 +1,8 @@
 FROM node:latest
 
+ARG VITE_BACKEND_URI
+ENV VITE_BACKEND_URI=$VITE_BACKEND_URI
+
 WORKDIR /app
 
 COPY package*.json ./

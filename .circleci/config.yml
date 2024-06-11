@@ -8,6 +8,9 @@ parameters:
   image-name-prefix:
     type: string
     default: asia-northeast1-docker.pkg.dev/$GOOGLE_PROJECT_ID/server/backend-ha-suzuki
+  backend-uri:
+    type: string
+    default: https://service-backend-ha-suzuki-76lhepmdeq-an.a.run.app
   db-instance-connection-name:
     type: string
     default: tech-induction-training-2024:asia-northeast1:ha-suzuki
@@ -24,6 +27,10 @@ jobs:
     machine:
       image: ubuntu-2204:current
     resource_class: large
+    parameters:
+      additional-build-option:
+        type: string
+        default: ""
     steps:
       - checkout
       - run:
@@ -93,42 +100,43 @@ jobs:
           paths:
             - ~/project/backend/node_modules
       - run:
-          name: Dockerize database
+          name: Run dockerize
           command: dockerize -wait tcp://$DB_HOST:$DB_PORT -timeout 1m
       - run:
-          naem: Maigration database
+          naem: Run maigrate
           working_directory: ~/project/backend
           command: |
             export DB_USER=$(gcloud secrets versions access latest --secret SUZUKI_DB_USER --project $GOOGLE_PROJECT_ID)
             export DB_PASSWORD=$(gcloud secrets versions access latest --secret SUZUKI_DB_PASSWORD --project $GOOGLE_PROJECT_ID)
             npm run migrate
 
-  deploy:
-    machine:
-      image: ubuntu-2204:current
-    resource_class: large
-    steps:
-      - checkout
-      - gcloud-authentication
-      - run:
-          name: Docker Configure
-          command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
-      - run:
-          name: Deploy Backend
-          command: gcloud run deploy service-backend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
-      - run:
-          name: Deploy Frontend
-          command: gcloud run deploy service-frontend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
+  # deploy:
+  #   machine:
+  #     image: ubuntu-2204:current
+  #   resource_class: large
+  #   steps:
+  #     - checkout
+  #     - gcloud-authentication
+  #     - run:
+  #         name: Docker Configure
+  #         command: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+  #     - run:
+  #         name: Deploy Backend
+  #         command: gcloud run deploy service-backend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
+  #     - run:
+  #         name: Deploy Frontend
+  #         command: gcloud run deploy service-frontend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
 
 workflows:
   install_and_configure_cli:
     jobs:
-      - build-and-push-backend
+      - build-and-push-backend:
+          additional-build-option: "--build-arg VITE_BACKEND_URI=<< pipeline.parameters.backend-uri >>"
       - build-and-push-frontend
       - migrate-database:
           requires:
             - build-and-push-backend
             - build-and-push-frontend
-      - deploy:
-          requires:
-            - migrate-database
+      # - deploy:
+      #     requires:
+      #       - migrate-database
