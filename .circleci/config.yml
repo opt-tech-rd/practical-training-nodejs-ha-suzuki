@@ -116,9 +116,9 @@ jobs:
       - run:
           name: Deploy Backend
           command: gcloud run deploy service-backend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/backend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
-      # - run:
-      #     name: Deploy Frontend
-      #     command: gcloud run deploy service-frontend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
+      - run:
+          name: Deploy Frontend
+          command: gcloud run deploy service-frontend-ha-suzuki --image asia-northeast1-docker.pkg.dev/tech-induction-training-2024/server/frontend-ha-suzuki:latest --region asia-northeast1 --allow-unauthenticated
 
 workflows:
   install_and_configure_cli:
