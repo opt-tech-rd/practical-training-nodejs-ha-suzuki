@@ -148,3 +148,4 @@ workflows:
       - deploy:
           requires:
             - migrate-database
+            - build-and-push-frontend
