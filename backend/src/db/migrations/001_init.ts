@@ -13,8 +13,19 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("role", MEDIUM_VARVARCHAR, (col) => col.notNull())
     .addColumn("created_at", DATE, (col) => col.defaultTo(sql`now()`).notNull())
     .execute();
+
+  await db.schema
+    .createTable("schedule")
+    .addColumn("schedule_id", UID, (col) => col.primaryKey())
+    .addColumn("date", MEDIUM_VARVARCHAR, (col) => col.notNull())
+    .addColumn("time", MEDIUM_VARVARCHAR, (col) => col.notNull())
+    .addColumn("member_id", UID, (col) => col.notNull())
+    .addColumn("result_id", UID, (col) => col.defaultTo(null))
+    .addColumn("created_at", DATE, (col) => col.defaultTo(sql`now()`).notNull())
+    .execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable("user").execute();
+  await db.schema.dropTable("schedule").execute();
 }
