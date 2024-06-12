@@ -1,18 +1,30 @@
 scalar JSON
 
-type FirebaseUser {
-  uid: String
-  email: String
+enum Role {
+  admin
+  member
 }
 
-type RawRules {
+type RawRule {
   action: [String!]!
   subject: [String!]!
   fields: [String!]
   conditions: JSON
 }
 
+type User {
+  uid: String!
+  email: String!
+  role: Role!
+  createdAt: String!
+}
+
 type Query {
-  whoAmI: FirebaseUser
-  rawRules: [RawRules]
+  whoAmI: User
+  rawRules: [RawRule!]
+  users: [User!]
+}
+
+type Mutation {
+  updateUserRole(uid: String!, role: Role!): User
 }

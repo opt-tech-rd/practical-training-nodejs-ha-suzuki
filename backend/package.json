@@ -5,7 +5,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "tsc",
-    "start": "npm run compile && node ./dist/index.js"
+    "start": "npm run compile && node ./dist/index.js",
+    "dev": "nodemon --exec tsx src/index.ts --ext ts,graphql",
+    "migrate": "tsx ./src/db/migrate.ts",
+    "rollback": "tsx ./src/db/rollback.ts",
+    "codegen": "kysely-codegen --camel-case"
   },
   "keywords": [],
   "author": "",
@@ -20,10 +24,15 @@
     "dotenv": "^16.4.5",
     "firebase-admin": "^12.1.1",
     "graphql": "^16.8.1",
-    "graphql-type-json": "^0.3.2"
+    "graphql-type-json": "^0.3.2",
+    "kysely": "^0.27.3",
+    "mysql2": "^3.10.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.1",
+    "kysely-codegen": "^0.15.0",
+    "nodemon": "^3.1.3",
+    "tsx": "^4.13.0",
     "typescript": "^5.4.5"
   }
 }

@@ -22,7 +22,10 @@ export default function Top() {
   return (
     <div>
       <h1>トップページ</h1>
-      <div>ログイン中: {user?.email}</div>
+      <div>
+        ログイン中のユーザ:{" "}
+        {JSON.stringify({ email: user.email })}
+      </div>
       <button
         onClick={() => {
           logout().then(() => {

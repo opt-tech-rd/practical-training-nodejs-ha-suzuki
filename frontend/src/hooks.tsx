@@ -15,10 +15,6 @@ export function useAuth() {
   const [user, setUser] = useState(auth.currentUser);
 
   const createUser = (email: EmailType, password: PasswordType) => {
-    if (email === undefined || password === undefined) {
-      return;
-    }
-
     return createUserWithEmailAndPassword(auth, email, password).then(
       (userCredential) => {
         const user = userCredential.user;
@@ -33,16 +29,7 @@ export function useAuth() {
   };
 
   const login = (email: EmailType, password: PasswordType) => {
-    if (email === undefined || password === undefined) {
-      return;
-    }
-
-    return signInWithEmailAndPassword(auth, email, password).then(
-      (userCredential) => {
-        console.log("IDトークン: ");
-        console.log(userCredential.user?.getIdToken());
-      }
-    );
+    return signInWithEmailAndPassword(auth, email, password)
   };
 
   const logout = () => {

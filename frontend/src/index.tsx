@@ -48,7 +48,6 @@ const router = createBrowserRouter([
         return redirect("/login");
       }
       if (!ability.can("read", "User")) {
-        console.log("権限エラー");
         alert("権限エラー");
         return redirect("/");
       }
