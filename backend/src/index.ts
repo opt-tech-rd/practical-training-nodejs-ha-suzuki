@@ -15,7 +15,7 @@ import {
 } from "./db/database.js";
 import { guardByRoles } from "./guards.js";
 
-console.log(config)
+console.log(config);
 
 async function getRawRules(role) {
   return role === "admin"
@@ -26,12 +26,24 @@ async function getRawRules(role) {
           fields: null,
           conditions: null,
         },
+        {
+          action: ["read", "create"],
+          subject: ["Schedule"],
+          fields: null,
+          conditions: null,
+        },
       ]
     : role === "member"
     ? [
         {
           action: ["read"],
           subject: ["User"],
+          fields: null,
+          conditions: null,
+        },
+        {
+          action: ["read", "create"],
+          subject: ["Schedule"],
           fields: null,
           conditions: null,
         },
