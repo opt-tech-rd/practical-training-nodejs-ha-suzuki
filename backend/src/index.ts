@@ -12,6 +12,7 @@ import {
   createUser,
   getUser,
   getUsers,
+  // createSchedule,
 } from "./db/database.js";
 import { guardByRoles } from "./guards.js";
 
@@ -78,6 +79,12 @@ const resolvers = {
       const user = await updateUserRole(uid, role);
       return user;
     },
+    // createSchedule: async (parent, args, contextValue) => {
+    //   await guardByRoles(["admin", "member"], contextValue);
+    //   const { uid, date, time } = args;
+    //   const schedule = await createSchedule(uid, date, time);
+    //   return schedule;
+    // },
   },
   JSON: GraphQLJSON,
 };

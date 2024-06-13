@@ -19,34 +19,24 @@ type User {
   createdAt: String!
 }
 
-# type Schedule {
-#   schedule_id: String!
-#   date: String!
-#   time: String!
-#   mentor: Mentor!
-#   mentees: [Mentee!]!
-#   result_id: null
-# }
-
-# type Mentor {
-#   uid: String!
-#   email: String!
-# }
-
-# type Mentee {
-#   uid: String!
-#   email: String!
-# }
+type Schedule {
+  scheduleId: String!
+  date: String!
+  time: String!
+  mentor: User!
+  mentees: [User!]!
+  resultId: String
+}
 
 type Query {
   whoAmI: User
   rawRules: [RawRule!]
   users: [User!]
-  # schedules: [Schedule]
-  # schedule(schedule_id: String): Schedule
+  schedules: [Schedule!]
+  schedule(scheduleId: String): Schedule
 }
 
 type Mutation {
   updateUserRole(uid: String!, role: Role!): User
-  # createSchedule(uid: String, date: String, time: String)
+  createSchedule(uid: String!, date: String!, time: String!): Schedule
 }

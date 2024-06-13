@@ -1,3 +1,5 @@
+import { v4 as uuid } from "uuid";
+
 import { createPool } from "mysql2";
 import { CamelCasePlugin, Kysely, MysqlDialect } from "kysely";
 import { DB } from "kysely-codegen";
@@ -52,4 +54,34 @@ export async function getUsers(role) {
       .orderBy("createdAt", "desc")
       .execute()
   );
+}
+
+export async function getSchedule(scheduleId: string) {
+  return db
+    .selectFrom("schedule")
+    .selectAll()
+    .where("scheduleId", "=", scheduleId)
+    .executeTakeFirst();
+}
+
+export async function getSchedules() {
+  return db.selectFrom("schedule").selectAll().executeTakeFirst();
+}
+
+export async function createSchedule(uid: string, date: string, time: string) {
+  const scheduleId = uuid();
+  let schedule = await getSchedule(scheduleId);
+  if (!schedule) {
+    await db
+      .insertInto("schedule")
+      .values({
+        scheduleId: scheduleId,
+        date: date,
+        time: time,
+        memberId: uid,
+      })
+      .executeTakeFirst();
+    schedule = await getSchedule(scheduleId);
+  }
+  return schedule;
 }

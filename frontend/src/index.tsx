@@ -10,6 +10,8 @@ import { ApolloProvider } from "@apollo/client";
 import Top from "./pages/Top";
 import Login from "./pages/Login";
 import Users from "./pages/Users";
+import Schedules from "./pages/Schedules";
+import Create from "./pages/Create";
 import { getCurrentUser } from "./firebase";
 import { apolloClient } from "./apollo-client";
 import { AbilityContext, ability, updateAbility } from "./casl";
@@ -48,6 +50,36 @@ const router = createBrowserRouter([
         return redirect("/login");
       }
       if (!ability.can("read", "User")) {
+        alert("権限エラー");
+        return redirect("/");
+      }
+      return null;
+    },
+  },
+  {
+    path: "/schedules",
+    element: <Schedules />,
+    loader: async () => {
+      const user: any = await getCurrentUser();
+      if (!user || !user.emailVerified) {
+        return redirect("/login");
+      }
+      if (!ability.can("read", "Schedule")) {
+        alert("権限エラー");
+        return redirect("/");
+      }
+      return null;
+    },
+  },
+  {
+    path: "/schedules/create",
+    element: <Create />,
+    loader: async () => {
+      const user: any = await getCurrentUser();
+      if (!user || !user.emailVerified) {
+        return redirect("/login");
+      }
+      if (!ability.can("create", "Schedule")) {
         alert("権限エラー");
         return redirect("/");
       }
