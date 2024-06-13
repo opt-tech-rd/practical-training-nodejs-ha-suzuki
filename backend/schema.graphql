@@ -26,6 +26,7 @@ type Schedule {
   mentor: User!
   mentees: [User!]!
   resultId: String
+  createdAt: String!
 }
 
 type Query {
@@ -33,10 +34,10 @@ type Query {
   rawRules: [RawRule!]
   users: [User!]
   schedules: [Schedule!]
-  schedule(scheduleId: String): Schedule
+  schedule(scheduleId: String!): Schedule
 }
 
 type Mutation {
   updateUserRole(uid: String!, role: Role!): User
-  createSchedule(uid: String!, date: String!, time: String!): Schedule
+  createSchedule(resultId: String!, date: String!, time: String!): Schedule
 }

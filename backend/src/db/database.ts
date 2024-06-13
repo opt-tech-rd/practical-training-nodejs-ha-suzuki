@@ -64,8 +64,12 @@ export async function getSchedule(scheduleId: string) {
     .executeTakeFirst();
 }
 
-export async function getSchedules() {
-  return db.selectFrom("schedule").selectAll().executeTakeFirst();
+export async function getSchedules(memberId: string) {
+  return db
+    .selectFrom("schedule")
+    .select(["scheduleId", "date", "time", "resultId", "createdAt"])
+    .where("memberId", "=", memberId)
+    .execute();
 }
 
 export async function createSchedule(uid: string, date: string, time: string) {
