@@ -38,6 +38,9 @@ export default function Top() {
       <Can do="read" on="User">
         <button onClick={() => navigate("/users")}>ユーザー管理</button>
       </Can>
+      <Can do="read" on="Schedule">
+        <button onClick={() => navigate("/schedules")}>スケジュール管理</button>
+      </Can>
       {loading ? (
         <div>Loading...</div>
       ) : error ? (

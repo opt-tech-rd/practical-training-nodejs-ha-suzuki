@@ -19,12 +19,25 @@ type User {
   createdAt: String!
 }
 
+type Schedule {
+  scheduleId: String!
+  date: String!
+  time: String!
+  mentor: User!
+  mentees: [User!]!
+  resultId: String
+  createdAt: String!
+}
+
 type Query {
   whoAmI: User
   rawRules: [RawRule!]
   users: [User!]
+  schedules: [Schedule!]
+  schedule(scheduleId: String!): Schedule
 }
 
 type Mutation {
   updateUserRole(uid: String!, role: Role!): User
+  createSchedule(resultId: String!, date: String!, time: String!): Schedule
 }

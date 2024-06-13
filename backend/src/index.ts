@@ -12,10 +12,11 @@ import {
   createUser,
   getUser,
   getUsers,
+  getSchedule,
+  getSchedules,
+  createSchedule,
 } from "./db/database.js";
 import { guardByRoles } from "./guards.js";
-
-console.log(config)
 
 async function getRawRules(role) {
   return role === "admin"
@@ -26,12 +27,24 @@ async function getRawRules(role) {
           fields: null,
           conditions: null,
         },
+        {
+          action: ["read", "create"],
+          subject: ["Schedule"],
+          fields: null,
+          conditions: null,
+        },
       ]
     : role === "member"
     ? [
         {
           action: ["read"],
           subject: ["User"],
+          fields: null,
+          conditions: null,
+        },
+        {
+          action: ["read", "create"],
+          subject: ["Schedule"],
           fields: null,
           conditions: null,
         },
@@ -58,6 +71,18 @@ const resolvers = {
       const users = (await getUsers(contextValue.user.role)) || [];
       return users;
     },
+    schedules: async (parent, args, contextValue, info) => {
+      await guardByRoles(["admin", "member"], contextValue);
+      const schedules = (await getSchedules(contextValue.user.uid)) || [];
+      return schedules;
+    },
+    schedule: async (parent, args, contextValue, info) => {
+      await guardByRoles(["admin", "member"], contextValue);
+      const { scheduleId } = args;
+      console.log(scheduleId);
+      const schedule = (await getSchedule(scheduleId)) || [];
+      return schedule;
+    },
   },
   Mutation: {
     updateUserRole: async (parent, args, contextValue) => {
@@ -65,6 +90,12 @@ const resolvers = {
       const { uid, role } = args;
       const user = await updateUserRole(uid, role);
       return user;
+    },
+    createSchedule: async (parent, args, contextValue) => {
+      await guardByRoles(["admin", "member"], contextValue);
+      const { resultId, date, time } = args;
+      const schedule = await createSchedule(resultId, date, time);
+      return schedule;
     },
   },
   JSON: GraphQLJSON,
@@ -95,7 +126,6 @@ const { url } = await startStandaloneServer(server, {
     const parseReqUrl = parse(req.url, true);
     const isHealthCheck = parseReqUrl.query.query === "{__typename}";
 
-    // ローカルホストでバックエンドの挙動を確認するときはコメントアウトする
     if (!isHealthCheck && !requestUser) {
       throw new GraphQLError("requestUser is not authenticated", {
         extensions: {

@@ -8,7 +8,6 @@ export const isCloudRun =
 
 export const config = {
   firebase: {
-    // service_account: process.env.FIREBASE_CONFIG,
     project_id: "tech-induction-training-2024",
   },
   server: {
