@@ -9,6 +9,7 @@
     "dev": "nodemon --exec tsx src/index.ts --ext ts,graphql",
     "migrate": "tsx ./src/db/migrate.ts",
     "rollback": "tsx ./src/db/rollback.ts",
+    "seed": "tsx ./src/db/seed.ts",
     "codegen": "kysely-codegen --camel-case"
   },
   "keywords": [],
