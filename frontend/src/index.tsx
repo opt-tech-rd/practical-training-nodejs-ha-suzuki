@@ -11,7 +11,7 @@ import Top from "./pages/Top";
 import Login from "./pages/Login";
 import Users from "./pages/Users";
 import Schedules from "./pages/Schedules";
-import Create from "./pages/Create";
+import Create from "./pages/CreateSchedule";
 import { getCurrentUser } from "./firebase";
 import { apolloClient } from "./apollo-client";
 import { AbilityContext, ability, updateAbility } from "./casl";
